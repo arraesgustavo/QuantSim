@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id       Int      @id @default(autoincrement())
+  name     String   
+  email    String   @unique
+  senha    String
+  admin    Boolean  @default(false)
+  experimentos Experimento[]
+}
+
+model Experimento {
+  id          Int                @id @default(autoincrement())
+  name        String
+  status      Int
+  results     Json?
+  usuarioId   Int?
+  usuario     Usuario?           @relation(fields: [usuarioId], references: [id])
+  medicao     Medicao?
+  circuitos   ExperimentoCircuito[]
+}
+
+model CircuitoQuantico {
+  id        Int                     @id @default(autoincrement())
+  name      String
+  descricao String
+  gates     QuantumGate[]
+  experimentos ExperimentoCircuito[]
+}
+
+model ExperimentoCircuito {
+  id              Int              @id @default(autoincrement())
+  experimentoId   Int
+  circuitoId      Int
+  experimento     Experimento      @relation(fields: [experimentoId], references: [id])
+  circuito        CircuitoQuantico @relation(fields: [circuitoId], references: [id])
+
+  @@unique([experimentoId, circuitoId])
+}
+
+model Qubit {
+  id        Int           @id @default(autoincrement())
+  estado    Int
+  portas    QuantumGate[]
+  medicoes  Medicao[]
+  stateVector   String?
+}
+
+model Medicao {
+  id        Int      @id @default(autoincrement())
+  value     Float
+  timestamp BigInt
+  qubitId   Int
+  experimentoId Int  @unique
+  qubit     Qubit    @relation(fields: [qubitId], references: [id])
+  experimento Experimento @relation(fields: [experimentoId], references: [id])
+}
+
+enum typeQuantumGate {
+  SGATE
+  HGATE
+  XGATE
+  ZGATE
+}
+
+model QuantumGate {
+  id            Int             @id @default(autoincrement())
+  type          typeQuantumGate          // 'SGate' | 'HGate' | 'ZGate' | 'XGate'
+  duration      Float
+  errorRate     Float
+  circuitoId    Int?
+  qubitId       Int?
+  matrixOperator String?
+  circuito      CircuitoQuantico? @relation(fields: [circuitoId], references: [id])
+  qubit         Qubit?          @relation(fields: [qubitId], references: [id])
+
+  // SGate
+  phase         Float?
+  isClifford    Boolean?
+
+  // HGate
+  phaseShift    Float?
+
+  // ZGate
+  isDiagonal    Boolean?
+
+  // XGate
+  pulseAmplitude Float?
+  isPauli       Boolean?
+}
