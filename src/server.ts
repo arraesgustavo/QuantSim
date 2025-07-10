@@ -8,6 +8,7 @@ import { authMiddleware } from './middleware/auth.middleware';
 import classRoutes from './routes/class.route';
 import cors from 'cors';
 import experimentoRoutes from './routes/experimento.route';
+import circuitoRoutes from './routes/circuitoQuantico.route';
 
 const app = express();
 
@@ -35,6 +36,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.use('/circuitos', authMiddleware, circuitoRoutes);
 app.use('/qubits', authMiddleware, qubitRoutes);
 app.use('/quantum-gates', authMiddleware , quantumGateRoutes);
 app.use('/auth', authRoutes);

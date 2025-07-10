@@ -25,7 +25,7 @@ export default function ListaClasses() {
     axios.get('/classes')
       .then(res => setClasses(res.data))
       .catch((err) => {
-        console.error(err); // log completo no console
+        console.error(err); 
         setErro('Erro ao carregar classes');
       })
       .finally(() => setLoading(false));

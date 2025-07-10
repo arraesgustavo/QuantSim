@@ -5,7 +5,7 @@ interface Complex {
   imag: number;
 }
 
-type Matrix2x2 = [Complex, Complex, Complex, Complex];
+//type Matrix2x2 = [Complex, Complex, Complex, Complex];
 
 const prisma = new PrismaClient();
 

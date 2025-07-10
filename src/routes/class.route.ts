@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-// GET /classes → retorna os experimentos com info básica
 router.get('/', async (req, res) => {
   try {
     const experimentos = await prisma.experimento.findMany({
@@ -25,7 +24,6 @@ router.get('/', async (req, res) => {
       }
     });
 
-    // Formatar os dados como "classes"
     const classes = experimentos.map((exp) => ({
       id: exp.id,
       nome: exp.name,
